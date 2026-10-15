@@ -1,12 +1,13 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { fileURLToPath } from 'node:url';
 
 export const PORT = 8123;
 export const BASE_URL = `http://127.0.0.1:${PORT}`;
 export const TIMEZONE = 'America/New_York';
 
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Env for the E2E Laravel server and artisan calls. Real env vars override .env, so the dev DB is never touched. */
 export const serverEnv: Record<string, string> = {

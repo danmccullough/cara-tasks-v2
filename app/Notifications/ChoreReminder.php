@@ -20,6 +20,10 @@ class ChoreReminder extends Notification implements ShouldQueue
     {
         $time = $this->occurrence->due_at->setTimezone(Household::timezone())->format('g:i A');
 
+        if ($this->isNag && $this->occurrence->started_at) {
+            return "Did you finish {$this->occurrence->chore->title}? Tap Done when you're finished.";
+        }
+
         return $this->isNag
             ? "Still waiting for you! Tap Done when you've finished."
             : "Due at {$time}. Tap Done when you've finished.";

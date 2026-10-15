@@ -39,6 +39,7 @@ class DashboardController extends Controller
                     'icon' => $o->chore->icon,
                     'due_at' => $o->due_at->toIso8601String(),
                     'status' => $o->status,
+                    'started_at' => $o->started_at?->toIso8601String(),
                 ]),
             ]);
 

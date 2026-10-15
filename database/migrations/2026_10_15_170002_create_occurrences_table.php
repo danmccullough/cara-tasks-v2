@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('reminders_sent')->default(0);
             $table->dateTime('last_reminded_at')->nullable();
             $table->dateTime('parents_alerted_at')->nullable(); // "not done yet" alert sent at the due time
+            $table->dateTime('started_at')->nullable(); // optional "I'm starting" tap
             $table->dateTime('submitted_at')->nullable();
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('reviewed_at')->nullable();

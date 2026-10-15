@@ -17,7 +17,12 @@ class ChoreOverdue extends Notification implements ShouldQueue
 
     private function text(): string
     {
-        return "{$this->occurrence->kid->name} hasn't done {$this->occurrence->chore->title} yet";
+        $name = $this->occurrence->kid->name;
+        $chore = $this->occurrence->chore->title;
+
+        return $this->occurrence->started_at
+            ? "{$name} started {$chore} but hasn't finished yet"
+            : "{$name} hasn't done {$chore} yet";
     }
 
     public function toArray(object $notifiable): array

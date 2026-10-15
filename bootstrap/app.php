@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias(['role' => EnsureRole::class]);
+
+        // Runs behind an HTTPS reverse proxy in Docker; trust its X-Forwarded-* headers.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -34,6 +34,7 @@ class TodayController extends Controller
                 'due_at' => $o->due_at->toIso8601String(),
                 'remind_at' => $o->due_at->subMinutes($o->assignment->remind_before_min)->toIso8601String(),
                 'status' => $o->status,
+                'started_at' => $o->started_at?->toIso8601String(),
                 'review_note' => $o->review_note,
             ]);
 

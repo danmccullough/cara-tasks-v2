@@ -37,6 +37,7 @@ Route::middleware(['auth', 'role:parent'])->group(function () {
 
 Route::middleware(['auth', 'role:kid'])->group(function () {
     Route::get('today', [TodayController::class, 'index'])->name('kid.today');
+    Route::post('occurrences/{occurrence}/start', [OccurrenceController::class, 'start'])->name('occurrences.start');
     Route::post('occurrences/{occurrence}/submit', [OccurrenceController::class, 'submit'])->name('occurrences.submit');
 
     Route::get('reward-shop', [RedemptionController::class, 'shop'])->name('kid.rewards');

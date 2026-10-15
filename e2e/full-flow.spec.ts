@@ -7,6 +7,8 @@ import { artisan, householdTimeFromNow, query } from './env';
  * -> parent approves -> kid gets points and redeems a reward -> parent hands it over.
  */
 test('chore lifecycle from setup to reward', async ({ browser }, testInfo) => {
+    test.setTimeout(90_000); // long multi-step flow against the single-threaded PHP dev server
+
     // Both projects share one DB, so names are unique per project.
     const suffix = testInfo.project.name;
     const kidName = `Sam-${suffix}`;
@@ -100,6 +102,21 @@ test('chore lifecycle from setup to reward', async ({ browser }, testInfo) => {
         await expect(kid.getByRole('heading', { name: 'Do now' })).toBeVisible();
         await expect(kid.getByText(choreTitle)).toBeVisible();
         await expect(kid.getByText('Wash hair too')).toBeVisible();
+    });
+
+    await test.step('kid taps Start and the parent sees it', async () => {
+        await kid.getByRole('button', { name: '▶ Start' }).click();
+        await expect(kid.getByText(/▶️ Started at/)).toBeVisible();
+        await expect(kid.getByRole('button', { name: '▶ Start' })).toBeHidden();
+
+        const started = query(
+            `select 1 from notifications where type = 'App\\Notifications\\ChoreStarted' and data like ?`,
+            `%${kidName} started: ${choreTitle}%`,
+        );
+        expect(started.length).toBeGreaterThan(0);
+
+        await parent.goto('/dashboard');
+        await expect(parent.locator('div.rounded-xl', { hasText: kidName }).getByText(/\(started /)).toBeVisible();
     });
 
     await test.step('kid taps Done', async () => {

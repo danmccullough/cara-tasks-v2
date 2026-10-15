@@ -14,6 +14,7 @@ interface TodayItem {
     due_at: string;
     remind_at: string;
     status: 'pending' | 'submitted' | 'approved';
+    started_at: string | null;
     review_note: string | null;
 }
 
@@ -34,6 +35,11 @@ const time = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: 'nume
 
 const celebrating = ref(false);
 const submitting = ref<number | null>(null);
+
+const start = (item: TodayItem) => {
+    submitting.value = item.id;
+    router.post(route('occurrences.start', item.id), {}, { preserveScroll: true, onFinish: () => (submitting.value = null) });
+};
 
 const markDone = (item: TodayItem) => {
     submitting.value = item.id;
@@ -72,7 +78,19 @@ const markDone = (item: TodayItem) => {
                 </div>
                 <p v-if="item.review_note" class="rounded-lg bg-amber-100 p-2 dark:bg-amber-900">💬 {{ item.review_note }}</p>
                 <p v-if="item.instructions" class="whitespace-pre-line">{{ item.instructions }}</p>
-                <Button size="lg" class="h-16 text-2xl" :disabled="submitting === item.id" @click="markDone(item)">✓ Done</Button>
+                <p v-if="item.started_at" class="font-semibold text-sky-700 dark:text-sky-300">▶️ Started at {{ time(item.started_at) }}</p>
+                <div class="flex gap-2">
+                    <Button
+                        v-if="!item.started_at"
+                        variant="outline"
+                        size="lg"
+                        class="h-16 flex-1 text-xl"
+                        :disabled="submitting === item.id"
+                        @click="start(item)"
+                        >▶ Start</Button
+                    >
+                    <Button size="lg" class="h-16 flex-[2] text-2xl" :disabled="submitting === item.id" @click="markDone(item)">✓ Done</Button>
+                </div>
             </div>
         </section>
 

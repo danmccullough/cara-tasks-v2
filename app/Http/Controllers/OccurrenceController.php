@@ -7,6 +7,7 @@ use App\Enums\PointReason;
 use App\Models\Occurrence;
 use App\Models\User;
 use App\Notifications\ChoreApproved;
+use App\Notifications\ChoreStarted;
 use App\Notifications\ChoreSubmitted;
 use App\Services\PointsService;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +17,26 @@ use Illuminate\Support\Facades\Notification;
 
 class OccurrenceController extends Controller
 {
+    /**
+     * Kid taps "Start" (optional). Nags pause for one nag interval, then ask "Did you finish?"
+     * with a fresh nag budget, so starting can't silence reminders for good.
+     */
+    public function start(Request $request, Occurrence $occurrence): RedirectResponse
+    {
+        abort_unless($occurrence->kid_id === $request->user()->id, 403);
+        abort_unless($occurrence->status === OccurrenceStatus::Pending && ! $occurrence->started_at, 409);
+
+        $occurrence->update([
+            'started_at' => now(),
+            'reminders_sent' => 1,
+            'last_reminded_at' => now(),
+        ]);
+
+        Notification::send(User::parents()->get(), new ChoreStarted($occurrence));
+
+        return back();
+    }
+
     /** Kid taps "Done". */
     public function submit(Request $request, Occurrence $occurrence): RedirectResponse
     {
@@ -62,6 +83,7 @@ class OccurrenceController extends Controller
 
         $occurrence->update([
             'status' => OccurrenceStatus::Pending,
+            'started_at' => null,
             'submitted_at' => null,
             'reviewed_by' => $request->user()->id,
             'reviewed_at' => now(),

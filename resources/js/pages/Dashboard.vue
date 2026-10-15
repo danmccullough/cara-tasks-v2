@@ -14,7 +14,7 @@ interface KidSummary {
     points: number;
     today_total: number;
     today_done: number;
-    today: { id: number; title: string; icon: string; due_at: string; status: string }[];
+    today: { id: number; title: string; icon: string; due_at: string; status: string; started_at: string | null }[];
 }
 
 interface Awaiting {
@@ -92,8 +92,13 @@ const reject = (item: Awaiting) => {
                         </div>
                         <ul class="flex flex-col gap-1 text-sm">
                             <li v-for="o in kid.today" :key="o.id" class="flex gap-2">
-                                <span>{{ statusIcon[o.status] }}</span>
-                                <span class="flex-1">{{ o.icon }} {{ o.title }}</span>
+                                <span>{{ o.status === 'pending' && o.started_at ? '▶️' : statusIcon[o.status] }}</span>
+                                <span class="flex-1">
+                                    {{ o.icon }} {{ o.title }}
+                                    <span v-if="o.status === 'pending' && o.started_at" class="text-muted-foreground">
+                                        (started {{ time(o.started_at) }})
+                                    </span>
+                                </span>
                                 <span class="text-muted-foreground">{{ time(o.due_at) }}</span>
                             </li>
                             <li v-if="!kid.today.length" class="text-muted-foreground">No chores today.</li>

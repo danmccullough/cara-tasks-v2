@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Role;
 use App\Models\Assignment;
 use App\Models\Chore;
 use App\Models\Reward;

@@ -1,0 +1,33 @@
+# The database is NOT in Docker: point DB_HOST/DB_* in .env at your MySQL server.
+# Put this behind an HTTPS reverse proxy (Caddy/Traefik/DO App Platform). Web push requires HTTPS.
+x-app: &app
+  build: .
+  image: cara-tasks:latest
+  env_file: .env
+  restart: unless-stopped
+  extra_hosts:
+    - "host.docker.internal:host-gateway" # lets DB_HOST=host.docker.internal reach MySQL on the host
+
+services:
+  app:
+    <<: *app
+    ports:
+      - "8080:8080"
+
+  queue:
+    <<: *app
+    command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3", "--sleep=1"]
+    environment:
+      AUTORUN_ENABLED: "false"
+    stop_signal: SIGTERM
+    healthcheck:
+      test: ["CMD", "healthcheck-queue"]
+
+  scheduler:
+    <<: *app
+    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    environment:
+      AUTORUN_ENABLED: "false"
+    stop_signal: SIGTERM
+    healthcheck:
+      test: ["CMD", "healthcheck-schedule"]

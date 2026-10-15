@@ -18,7 +18,8 @@ export default defineConfig({
     ],
     webServer: {
         // Plain PHP server (not `artisan serve`) so the env below reaches Laravel unchanged.
-        command: `php -S 127.0.0.1:${PORT} -t public vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php`,
+        command: `php -S 127.0.0.1:${PORT} ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php`,
+        cwd: 'public',
         url: `${BASE_URL}/up`,
         env: serverEnv,
         reuseExistingServer: false,
