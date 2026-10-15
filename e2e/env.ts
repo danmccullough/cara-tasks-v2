@@ -21,6 +21,7 @@ export const serverEnv: Record<string, string> = {
     QUEUE_CONNECTION: 'sync',
     MAIL_MAILER: 'log',
     HOUSEHOLD_TIMEZONE: TIMEZONE,
+    VITE_HOT_FILE: path.join(root, 'storage', 'framework', 'e2e-no-hot'), // never exists: always use public/build
 };
 
 export function artisan(command: string): string {

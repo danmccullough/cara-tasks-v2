@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -23,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Rewards', href: '/rewards' }];
 
 const open = ref(false);
 const editing = ref<Reward | null>(null);
-const form = useForm({ title: '', icon: '🎁', cost: 20, active: true });
+const form = useForm({ title: '', icon: '🎁', cost: 20, active: true as boolean });
 
 const openDialog = (reward: Reward | null) => {
     editing.value = reward;
@@ -71,6 +71,7 @@ const remove = (reward: Reward) => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{{ editing ? 'Edit reward' : 'New reward' }}</DialogTitle>
+                    <DialogDescription>Kids spend points on rewards.</DialogDescription>
                 </DialogHeader>
                 <form class="grid gap-4" @submit.prevent="save">
                     <div class="grid grid-cols-[5rem_1fr] gap-3">

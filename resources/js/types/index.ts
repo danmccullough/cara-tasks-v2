@@ -17,6 +17,7 @@ export interface NavItem {
 }
 
 export interface SharedData {
+    [key: string]: unknown; // required by Inertia's PageProps constraint
     name: string;
     quote: { message: string; author: string };
     auth: Auth;

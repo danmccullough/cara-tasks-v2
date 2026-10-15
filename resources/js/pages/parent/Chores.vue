@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -53,7 +53,7 @@ const today = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
 // ---- Chore dialog ----
 const choreOpen = ref(false);
 const editingChore = ref<Chore | null>(null);
-const choreForm = useForm({ title: '', icon: '✅', instructions: '', points: 5, active: true });
+const choreForm = useForm({ title: '', icon: '✅', instructions: '', points: 5, active: true as boolean });
 
 const openChore = (chore: Chore | null) => {
     editingChore.value = chore;
@@ -93,7 +93,7 @@ const assignForm = useForm({
     max_nags: 3,
     start_date: today(),
     end_date: '' as string | null,
-    active: true,
+    active: true as boolean,
 });
 
 const openAssignment = (chore: Chore, assignment: Assignment | null) => {
@@ -177,6 +177,7 @@ const deleteAssignment = (assignment: Assignment) => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{{ editingChore ? 'Edit chore' : 'New chore' }}</DialogTitle>
+                    <DialogDescription>What the kid sees and how many points it earns.</DialogDescription>
                 </DialogHeader>
                 <form class="grid gap-4" @submit.prevent="saveChore">
                     <div class="grid grid-cols-[5rem_1fr] gap-3">
@@ -211,6 +212,7 @@ const deleteAssignment = (assignment: Assignment) => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{{ assignChore?.icon }} {{ assignChore?.title }}: schedule</DialogTitle>
+                    <DialogDescription>When it's due and how often to remind.</DialogDescription>
                 </DialogHeader>
                 <form class="grid gap-4" @submit.prevent="saveAssignment">
                     <div v-if="!editingAssignment" class="grid gap-1">

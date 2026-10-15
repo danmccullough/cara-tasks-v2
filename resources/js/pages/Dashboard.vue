@@ -41,7 +41,7 @@ const time = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: 'nume
 
 const statusIcon: Record<string, string> = { pending: '⬜', submitted: '⏳', approved: '✅', missed: '❌' };
 
-const post = (url: string, data: Record<string, unknown> = {}) => router.post(url, data, { preserveScroll: true });
+const post = (url: string, data: Record<string, string> = {}) => router.post(url, data, { preserveScroll: true });
 
 const reject = (item: Awaiting) => {
     const note = prompt(`Send "${item.chore.title}" back to ${item.kid.name}? Optional note:`);
@@ -54,6 +54,7 @@ const reject = (item: Awaiting) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-6 p-4">
+            <h1 class="sr-only">Dashboard</h1>
             <EnablePushCard />
 
             <section class="flex flex-col gap-2">

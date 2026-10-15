@@ -1,4 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { artisan, householdTimeFromNow, query } from './env';
 
 /**
@@ -6,7 +7,7 @@ import { artisan, householdTimeFromNow, query } from './env';
  * parent sets up kid, reward, chore and schedule -> reminder fires -> kid logs in with PIN and taps Done
  * -> parent approves -> kid gets points and redeems a reward -> parent hands it over.
  */
-test('chore lifecycle from setup to reward', async ({ browser }, testInfo) => {
+test('chore lifecycle from setup to reward', async ({ browser, watchConsole }, testInfo) => {
     test.setTimeout(90_000); // long multi-step flow against the single-threaded PHP dev server
 
     // Both projects share one DB, so names are unique per project.
@@ -20,8 +21,10 @@ test('chore lifecycle from setup to reward', async ({ browser }, testInfo) => {
     test.skip(!due.sameDay, 'Too close to midnight for a same-day chore');
 
     const parentContext = await browser.newContext();
-    const parent = await parentContext.newPage();
     const kidContext = await browser.newContext();
+    watchConsole(parentContext);
+    watchConsole(kidContext);
+    const parent = await parentContext.newPage();
     const kid = await kidContext.newPage();
 
     await test.step('parent logs in', async () => {
@@ -169,6 +172,24 @@ test('chore lifecycle from setup to reward', async ({ browser }, testInfo) => {
 
     await parentContext.close();
     await kidContext.close();
+});
+
+test('parent sidebar links open every page', async ({ page, isMobile }) => {
+    await loginAsParent(page);
+
+    const pages = [
+        { link: 'Chores', url: /\/chores$/, heading: 'Chores' },
+        { link: 'Rewards', url: /\/rewards$/, heading: 'Rewards' },
+        { link: 'Family', url: /\/family$/, heading: 'Family' },
+        { link: 'Dashboard', url: /\/dashboard$/, heading: 'Waiting for approval' },
+    ];
+
+    for (const target of pages) {
+        if (isMobile) await page.getByRole('button', { name: 'Toggle Sidebar' }).click();
+        await page.getByRole('link', { name: target.link, exact: true }).click();
+        await expect(page).toHaveURL(target.url);
+        await expect(page.getByRole('heading', { name: target.heading })).toBeVisible();
+    }
 });
 
 test('kid login guards', async ({ page }, testInfo) => {

@@ -39,7 +39,7 @@ const redeem = (reward: Reward) => {
         <section v-if="requested.length" class="flex flex-col gap-2">
             <h2 class="text-xl font-bold">Waiting for a grown-up</h2>
             <div v-for="r in requested" :key="r.id" class="flex items-center gap-3 rounded-2xl bg-muted p-3">
-                <span class="text-3xl">{{ r.reward.icon }}</span>
+                <span class="text-3xl" aria-hidden="true">{{ r.reward.icon }}</span>
                 <span class="flex-1 text-lg">{{ r.reward.title }}</span>
                 <span>⏳</span>
             </div>
@@ -47,11 +47,18 @@ const redeem = (reward: Reward) => {
 
         <div v-for="reward in rewards" :key="reward.id" class="flex flex-col gap-3 rounded-2xl border-2 bg-card p-4">
             <div class="flex items-center gap-3">
-                <span class="text-5xl">{{ reward.icon }}</span>
+                <span class="text-5xl" aria-hidden="true">{{ reward.icon }}</span>
                 <span class="flex-1 text-xl font-bold">{{ reward.title }}</span>
                 <span class="text-lg font-semibold">⭐ {{ reward.cost }}</span>
             </div>
-            <div class="h-4 overflow-hidden rounded-full bg-muted">
+            <div
+                class="h-4 overflow-hidden rounded-full bg-muted"
+                role="progressbar"
+                :aria-label="`Progress to ${reward.title}`"
+                :aria-valuenow="progress(reward.cost)"
+                aria-valuemin="0"
+                aria-valuemax="100"
+            >
                 <div class="h-full rounded-full bg-amber-400 transition-all" :style="{ width: `${progress(reward.cost)}%` }" />
             </div>
             <Button v-if="points >= reward.cost" size="lg" class="text-xl" @click="redeem(reward)">Get it!</Button>

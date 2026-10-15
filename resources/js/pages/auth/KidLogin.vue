@@ -42,15 +42,16 @@ const press = (digit: string) => {
                 :class="kidColor(kid.color)"
                 @click="form.kid_id = kid.id"
             >
-                <span class="text-5xl">{{ kid.avatar_emoji ?? '🙂' }}</span>
+                <span class="text-5xl" aria-hidden="true">{{ kid.avatar_emoji ?? '🙂' }}</span>
                 {{ kid.name }}
             </button>
             <p v-if="kids.length === 0" class="col-span-2 text-center text-muted-foreground">No kids yet. Ask a parent to add you.</p>
         </div>
 
         <div v-else class="flex flex-col items-center gap-6">
-            <div class="flex gap-3" aria-label="PIN">
-                <span v-for="i in 4" :key="i" class="h-4 w-4 rounded-full border-2 border-foreground" :class="{ 'bg-foreground': form.pin.length >= i }" />
+            <div class="flex gap-3" role="status">
+                <span v-for="i in 4" :key="i" aria-hidden="true" class="h-4 w-4 rounded-full border-2 border-foreground" :class="{ 'bg-foreground': form.pin.length >= i }" />
+                <span class="sr-only">{{ form.pin.length }} of 4 PIN digits entered</span>
             </div>
             <InputError :message="form.errors.pin || form.errors.kid_id" />
 

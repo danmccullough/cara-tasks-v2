@@ -64,13 +64,13 @@ const markDone = (item: TodayItem) => {
     <KidLayout :points="points" :streak="streak">
         <EnablePushCard />
 
-        <div v-if="celebrating" class="rounded-2xl bg-emerald-100 p-4 text-center text-2xl font-bold dark:bg-emerald-900">🎉 Nice job!</div>
+        <div v-if="celebrating" role="status" class="rounded-2xl bg-emerald-100 p-4 text-center text-2xl font-bold dark:bg-emerald-900">🎉 Nice job!</div>
 
         <section v-if="nowItems.length" class="flex flex-col gap-3">
             <h2 class="text-xl font-bold">Do now</h2>
             <div v-for="item in nowItems" :key="item.id" class="flex flex-col gap-3 rounded-2xl border-4 border-sky-400 bg-card p-4">
                 <div class="flex items-center gap-3">
-                    <span class="text-5xl">{{ item.icon }}</span>
+                    <span class="text-5xl" aria-hidden="true">{{ item.icon }}</span>
                     <div class="flex-1">
                         <div class="text-2xl font-bold">{{ item.title }}</div>
                         <div class="text-muted-foreground">by {{ time(item.due_at) }} · ⭐ {{ item.points }}</div>
@@ -97,7 +97,7 @@ const markDone = (item: TodayItem) => {
         <section v-if="laterItems.length" class="flex flex-col gap-2">
             <h2 class="text-xl font-bold">Later today</h2>
             <div v-for="item in laterItems" :key="item.id" class="flex items-center gap-3 rounded-2xl border-2 bg-card p-3">
-                <span class="text-3xl">{{ item.icon }}</span>
+                <span class="text-3xl" aria-hidden="true">{{ item.icon }}</span>
                 <span class="flex-1 text-lg font-semibold">{{ item.title }}</span>
                 <span class="text-muted-foreground">{{ time(item.due_at) }}</span>
                 <Button variant="outline" :disabled="submitting === item.id" @click="markDone(item)">Done early</Button>
@@ -107,7 +107,7 @@ const markDone = (item: TodayItem) => {
         <section v-if="doneItems.length" class="flex flex-col gap-2">
             <h2 class="text-xl font-bold">Done ✓</h2>
             <div v-for="item in doneItems" :key="item.id" class="flex items-center gap-3 rounded-2xl bg-muted p-3 opacity-80">
-                <span class="text-3xl">{{ item.icon }}</span>
+                <span class="text-3xl" aria-hidden="true">{{ item.icon }}</span>
                 <span class="flex-1 text-lg line-through">{{ item.title }}</span>
                 <span>{{ item.status === 'approved' ? `⭐ +${item.points}` : '⏳ waiting for OK' }}</span>
             </div>

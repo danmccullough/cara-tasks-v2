@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -98,6 +98,7 @@ const remove = (member: Member) => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{{ editing ? `Edit ${editing.name}` : form.role === 'kid' ? 'Add kid' : 'Add parent' }}</DialogTitle>
+                    <DialogDescription>{{ form.role === 'kid' ? 'Kids log in by tapping their name and typing a PIN.' : 'Parents log in with email and password.' }}</DialogDescription>
                 </DialogHeader>
                 <form class="grid gap-4" @submit.prevent="save">
                     <div class="grid gap-1">
